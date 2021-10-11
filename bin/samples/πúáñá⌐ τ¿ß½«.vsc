@@ -1,0 +1,70 @@
+/*
+
+--> Copyright(c) 2008 VTR Corp.
+http://f1-comp.ru
+
+пример скрипта
+
+*/
+
+// функция
+func print_matrix($string){  //* эффект матрицы
+	for($i,1,length($string)){
+		console_write(copy($string,$i,1)); // выводим один символ
+		sleep(10);       // задержка
+	}
+	return;
+}
+	   
+// тело программы
+func main($script_name){
+	expert(True);               
+	console(true);                    // показываем консоль
+	console_set_title("Welcome to the game!");   // меняем заголовок
+	print_matrix("welcome user to this program\n");
+	console_set_mode($_FOREGROUND_GREEN);      // устанавливаем цвет текста консоли
+	console_write("Testing\nConsole");      // пишем что нибудь в консоли
+	$user=input("Program","Name");         // ввод пользователем
+	exit_equals($user);         // выходим если $user==""
+	/*
+	console_set_mode($_FOREGROUND_MAROON);             
+	console_write("\nWelcome user ");
+	console_set_mode($_FOREGROUND_WHITE);        //Старое
+	console_write($user);
+	console_set_mode($_FOREGROUND_MAROON); 
+	console_write("  (\$user)");
+	*/
+	
+	// теперь если хотим выделить текст надо использовать \f и \b
+	
+	//    \f<Цвет в hex>   FOREGROUND   Цвет текста
+	//    \b<Цвет в hex>   BACKGROUND   Цвет фона
+	
+	console_write("\n\f2Welcome user\fF $user\f5 (\$user)\f2");  // приветствуем
+	  
+	$res=$_ID_YES;    //устанавливаем переменную
+	while($res==$_ID_YES){   // цикл пока $res==$_ID_YES
+		$d1= rand(1,10);      // любое число от 1 до 10
+		$d2= rand(1,10);      // любое число от 1 до 10
+		$sum=$d1+$d2;         // сумма $d1 и $d2
+		//вот здесь прервемся для примера
+		$inp=input("Game","How much $d1 + $d2 ?");  // пользователь пишет ответ
+		if($inp==""){break;}            // если ничего не написал значит выходим из цикла
+		if(is_digits_only($inp)==false){   // проверяем на цифры
+			message("Error","Only digits must be entered",$_MB_ICONERROR); // ошибка
+			continue;   // продолжаем с начала цикла
+		}
+		if ($inp==$sum){  // проверяем ответ
+			message("YOU WON","Contragulations",$_MB_ICONINFORMATION);  //выиграли
+			break;   // конец цикла
+		}else{      // иначе спрашиваем разрешения сыграть заного
+			$res=message("You suck","Right answer: $d1 + $d2 = $sum\nWanna play again?",$_MB_YESNO +$_MB_ICONQUESTION);
+		}
+	}
+	return;    // возврат чего нибудь :)  можно было не писать
+}
+
+
+
+
+

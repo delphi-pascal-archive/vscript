@@ -1,0 +1,47 @@
+// мдаааа.....
+// сложновато))
+
+
+// основная функция запуска
+func main($script){
+    //устанавливаем значение переменной
+    $caption = "Calculator";
+    
+    //грузим иконку
+	$calc_icon= library_load_icon(library_load("shell32.dll"),307);
+	
+	//создаем окошко
+	$main_window=gui_window("TCalc",$caption,$_WS_SYSMENU+$_WS_VISIBLE+$_WS_CAPTION,$_CW_DESKTOPCENTER,$_CW_DESKTOPCENTER,200,100,$calc_icon,0,0,"WindowFunc");
+	
+	//создаем контролы на окне
+	gui_control($main_window,"button","ok",201,$_WS_CHILD+$_WS_VISIBLE+$_BS_DEFPUSHBUTTON+$_BS_FLAT,152,16,32,16);
+	gui_control($main_window,"edit","2+7",202,$_WS_CHILD+$_WS_VISIBLE,16,16,130,16);
+	gui_control($main_window,"static","Ready",203,$_WS_CHILD+$_WS_VISIBLE,16,36,130,16);
+	
+	//иконка в трее...
+	tray_icon($main_window,$calc_icon,"Easy Calc",$_NIM_ADD);
+	tray_icon_show_balloon($main_window,"[$caption] -> Startup","Welcome to the Calc program\nSimple create with vscript",4);
+	idle(); //перевод программы в режим ожидания
+}
+	 
+func WindowFunc($hwnd,$msg,$param,$id){ //обработка сообщений виндоуса
+	if($msg==$_WM_CLOSE){  //если крестик нажали
+		tray_icon($main_window,$calc_icon,null,$_NIM_DELETE);  //удаляем иконку
+		close();  //выходим
+	}
+	if($msg==$_WM_COMMAND){  //если нажали кнопку
+		if($id==201){ //click ok  //определяем ID   //math_compiler - производить математические операции
+			$res=math_compiler(gui_get($hwnd,202)); //gui_get - получить текст
+			if length($res)==0 {                    //gui_set - установить текст
+				$res="[ERROR]";
+				tray_icon_show_balloon($hwnd,"[$caption] -> Error","Cannot compile expression\nCheck text!",2);
+			}else{
+				tray_icon_show_balloon($hwnd,"[$caption] -> Result",gui_get($hwnd,202)." = $res",4);
+			}
+			gui_set($hwnd,203,$res);
+		}
+	}
+}
+						  
+
+
